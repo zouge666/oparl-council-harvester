@@ -13,6 +13,9 @@ max_retries = 1
 retry_wait_seconds = 0
 page_delay_seconds = 0
 
+[signals]
+mega_substation = ["umspannwerk"]
+
 [[sources]]
 name = "testcity"
 municipality = "Teststadt"

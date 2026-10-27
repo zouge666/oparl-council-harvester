@@ -45,6 +45,12 @@ def load_settings(path=None):
     settings["http"] = http
 
     check_sources(settings.get("sources"))
+    check_signals(settings.get("signals"))
+
+    if "filter" not in settings:
+        settings["filter"] = {}
+    if "exclude_keywords" not in settings["filter"]:
+        settings["filter"]["exclude_keywords"] = []
     return settings
 
 
@@ -64,6 +70,19 @@ def check_sources(sources):
         # sources are on unless the config says no
         if "enabled" not in source:
             source["enabled"] = True
+
+
+def check_signals(signals):
+    if not signals:
+        raise ConfigError("there are no [signals] keywords in the config")
+
+    for name, keywords in signals.items():
+        if not isinstance(keywords, list) or len(keywords) == 0:
+            raise ConfigError(f"signal '{name}' needs a list of keywords")
+        for keyword in keywords:
+            # very short keywords match way to much ("kv" is in "musikverein")
+            if not isinstance(keyword, str) or len(keyword.strip()) < 4:
+                raise ConfigError(f"keyword '{keyword}' in '{name}' is too short")
 
 
 def get_source(settings, name):

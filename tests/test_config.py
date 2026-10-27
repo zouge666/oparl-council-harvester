@@ -10,6 +10,9 @@ GOOD_CONFIG = """
 [http]
 page_size = 10
 
+[signals]
+mega_substation = ["umspannwerk"]
+
 [[sources]]
 name = "dresden"
 municipality = "Dresden"
@@ -71,6 +74,23 @@ system_url = "https://other.example.test/system"
 """
     with pytest.raises(ConfigError):
         load_settings(write_config(tmp_path, text))
+
+
+def test_config_without_signals_is_rejected(tmp_path):
+    text = GOOD_CONFIG.replace('mega_substation = ["umspannwerk"]', "")
+    with pytest.raises(ConfigError, match="signals"):
+        load_settings(write_config(tmp_path, text))
+
+
+def test_too_short_keyword_is_rejected(tmp_path):
+    text = GOOD_CONFIG.replace('["umspannwerk"]', '["umspannwerk", "kv"]')
+    with pytest.raises(ConfigError, match="too short"):
+        load_settings(write_config(tmp_path, text))
+
+
+def test_exclude_list_defaults_to_empty(tmp_path):
+    settings = load_settings(write_config(tmp_path, GOOD_CONFIG))
+    assert settings["filter"]["exclude_keywords"] == []
 
 
 def test_unknown_source_name(tmp_path):

@@ -11,6 +11,46 @@ page_delay_seconds = 1
 page_size = 100
 user_agent = "oparl-council-harvester/0.1 (+https://github.com/zouge666/oparl-council-harvester)"
 
+# keywords are checked against the paper title, in lower case and "-" counts as a space.
+# if a paper matches two signals, the first one here wins.
+[signals]
+mega_substation = [
+    "umspannwerk",
+    "umspannanlage",
+    "umspannstation",
+    "380 kv",
+    "220 kv",
+    "110 kv",
+    "380kv",
+    "110kv",
+    "hochspannung",
+    "höchstspannung",
+    "50hertz",
+]
+semiconductor_dc_park = [
+    "halbleiter",
+    "chipfabrik",
+    "chip fabrik",
+    "mikroelektronik",
+    "esmc",
+    "tsmc",
+    "infineon",
+    "globalfoundries",
+    "silicon saxony",
+    "rechenzentrum",
+    "rechenzentren",
+    "datacenter",
+    "data center",
+    "datenzentrum",
+]
+
+[filter]
+# papers with one of these words are skipped even when a keyword matches.
+# small grants for clubs talk about tsmc sometimes, but they are not infrastructure
+exclude_keywords = [
+    "kleinprojektförderung",
+]
+
 [[sources]]
 name = "dresden"
 municipality = "Dresden"
