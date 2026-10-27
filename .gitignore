@@ -1,0 +1,25 @@
+# python stuff
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+build/
+dist/
+
+# tool caches
+.pytest_cache/
+.ruff_cache/
+.coverage
+
+# local settings, never commit this one
+.env
+
+# stuff from local runs
+reports/
+output/
+
+# editors and mac
+.idea/
+.vscode/
+.DS_Store
