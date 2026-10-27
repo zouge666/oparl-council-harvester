@@ -1,0 +1,73 @@
+"""loads the settings for the harvester.
+
+normal settings live in config/harvester.toml.
+secrets (like the database password) only come from env vars.
+"""
+
+import os
+import tomllib
+
+DEFAULT_CONFIG_PATH = "config/harvester.toml"
+
+HTTP_DEFAULTS = {
+    "timeout_seconds": 60,
+    "max_retries": 3,
+    "retry_wait_seconds": 2,
+    "page_delay_seconds": 1,
+    "page_size": 100,
+    "user_agent": "oparl-council-harvester",
+}
+
+
+class ConfigError(Exception):
+    pass
+
+
+def load_settings(path=None):
+    """reads the toml file and gives back the settings as one dict"""
+    if path is None:
+        path = os.environ.get("HARVESTER_CONFIG", DEFAULT_CONFIG_PATH)
+
+    if not os.path.exists(path):
+        raise ConfigError(f"config file not found: {path}")
+
+    with open(path, "rb") as f:
+        try:
+            settings = tomllib.load(f)
+        except tomllib.TOMLDecodeError as e:
+            raise ConfigError(f"config file is broken: {e}")
+
+    # fill in the http settings that are not in the file
+    http = settings.get("http", {})
+    for key, value in HTTP_DEFAULTS.items():
+        if key not in http:
+            http[key] = value
+    settings["http"] = http
+
+    check_sources(settings.get("sources"))
+    return settings
+
+
+def check_sources(sources):
+    if not sources:
+        raise ConfigError("there are no sources in the config")
+
+    names = []
+    for source in sources:
+        for key in ["name", "municipality", "system_url"]:
+            if not source.get(key):
+                raise ConfigError(f"a source is missing '{key}'")
+        if source["name"] in names:
+            raise ConfigError(f"source name is used twice: {source['name']}")
+        names.append(source["name"])
+
+        # sources are on unless the config says no
+        if "enabled" not in source:
+            source["enabled"] = True
+
+
+def get_source(settings, name):
+    for source in settings["sources"]:
+        if source["name"] == name:
+            return source
+    raise ConfigError(f"unknown source: {name}")

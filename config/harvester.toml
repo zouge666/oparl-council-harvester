@@ -1,0 +1,26 @@
+# settings for the harvester
+# no passwords or keys in here! secrets only come from env vars
+
+[http]
+timeout_seconds = 90
+max_retries = 3
+retry_wait_seconds = 5
+# wait a bit between pages so we dont hammer the servers
+page_delay_seconds = 1
+# dresden needs about 30 sec for 100 papers, smaller pages are not faster in total
+page_size = 100
+user_agent = "oparl-council-harvester/0.1 (+https://github.com/zouge666/oparl-council-harvester)"
+
+[[sources]]
+name = "dresden"
+municipality = "Dresden"
+region = "Sachsen"
+system_url = "https://oparl.dresden.de/system"
+
+[[sources]]
+name = "leipzig"
+municipality = "Leipzig"
+region = "Sachsen"
+system_url = "https://ratsinformation.leipzig.de/allris_leipzig_public/oparl/system"
+# turned off for now: their server says "Oparl-Modul ist deaktiviert" (http 500), checked 2026-10-27
+enabled = false
