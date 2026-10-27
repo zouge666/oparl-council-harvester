@@ -81,6 +81,29 @@ class OParlClient:
             next_url = links.get("next")
         return data["data"], next_url
 
+    def get_bodies(self, system_url):
+        """reads the system object and the bodies (cities) behind it.
+
+        gives back (system, bodies). we only keep bodies that have a paper list.
+        """
+        system = self.get_json(system_url)
+        if not isinstance(system, dict) or not system.get("body"):
+            raise OParlError(f"system is missing or has no body list: {system_url}")
+
+        bodies = []
+        url = system["body"]
+        pages = 0
+        # a city has only a few bodies, 20 pages is way more then enough
+        while url and pages < 20:
+            pages += 1
+            items, url = self.get_page(url)
+            if items is None:
+                break
+            for body in items:
+                if isinstance(body, dict) and body.get("paper"):
+                    bodies.append(body)
+        return system, bodies
+
     def wait_between_pages(self):
         if self.page_delay > 0:
             time.sleep(self.page_delay)

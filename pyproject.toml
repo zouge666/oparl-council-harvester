@@ -20,6 +20,9 @@ dev = [
     "ruff>=0.6",
 ]
 
+[project.scripts]
+council-harvester = "council_harvester.cli:main"
+
 [tool.setuptools.packages.find]
 where = ["src"]
 

@@ -14,6 +14,14 @@ Still work in progress.
 uv sync --extra dev
 ```
 
+## Check the sources
+
+```bash
+uv run council-harvester check
+```
+
+What we found about the sources is in [docs/data_source.md](docs/data_source.md).
+
 ## Checks
 
 ```bash
