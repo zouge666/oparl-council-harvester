@@ -56,6 +56,10 @@ name = "dresden"
 municipality = "Dresden"
 region = "Sachsen"
 system_url = "https://oparl.dresden.de/system"
+# papers have no "web" link, but session (somacos) uses the same number in the oparl id
+# and on the web page. the page depends on the kind of paper (the part before the number).
+# {number} is the last part of the paper id
+web_urls = { vo = "https://ratsinfo.dresden.de/vo0050.asp?__kvonr={number}", ag = "https://ratsinfo.dresden.de/ag0050.asp?__kagnr={number}" }
 
 [[sources]]
 name = "leipzig"
