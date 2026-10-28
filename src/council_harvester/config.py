@@ -51,6 +51,9 @@ def load_settings(path=None):
         settings["filter"] = {}
     if "exclude_keywords" not in settings["filter"]:
         settings["filter"]["exclude_keywords"] = []
+
+    # the db url has the password in it, so it only comes from the env (or .env file)
+    settings["database_url"] = os.environ.get("DATABASE_URL", "")
     return settings
 
 

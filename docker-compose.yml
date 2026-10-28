@@ -1,0 +1,25 @@
+# local postgis for development and demos
+# start it with: docker compose up -d
+services:
+  db:
+    image: postgis/postgis:16-3.4
+    # the image is only built for amd64. on a apple silicon mac docker runs it with emulation
+    platform: linux/amd64
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-iris}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in your .env file}
+      POSTGRES_DB: ${POSTGRES_DB:-iris}
+    ports:
+      # only reachable from this computer
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./sql:/sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+volumes:
+  pgdata:

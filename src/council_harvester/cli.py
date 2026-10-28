@@ -6,11 +6,18 @@ run `council-harvester --help` to see all commands.
 import argparse
 import sys
 
+import psycopg
+from dotenv import load_dotenv
+
+from council_harvester import db
 from council_harvester.config import ConfigError, get_source, load_settings
 from council_harvester.oparl_client import OParlClient, OParlError
 
 
 def main(argv=None):
+    # reads the .env file in the current folder if there is one. real env vars still win
+    load_dotenv(".env")
+
     parser = build_parser()
     args = parser.parse_args(argv)
 
@@ -18,9 +25,14 @@ def main(argv=None):
         settings = load_settings(args.config)
         if args.command == "check":
             return run_check(settings, args.source)
+        if args.command == "init-db":
+            return run_init_db(settings)
     except ConfigError as e:
         print(f"config problem: {e}", file=sys.stderr)
         return 2
+    except psycopg.Error as e:
+        print(f"database problem: {e}", file=sys.stderr)
+        return 1
 
     parser.print_help()
     return 2
@@ -36,6 +48,8 @@ def build_parser():
 
     check = commands.add_parser("check", help="check that the oparl sources answer")
     check.add_argument("source", nargs="?", help="only check this source")
+
+    commands.add_parser("init-db", help="create the schema and tables in postgis")
     return parser
 
 
@@ -88,3 +102,11 @@ def check_source(client, source):
         else:
             first = items[0]
             print(f"     first paper: {first.get('date')} {first.get('name')}")
+
+
+def run_init_db(settings):
+    conn = db.connect(settings["database_url"])
+    names = db.init_db(conn)
+    conn.close()
+    print("ran sql files: " + ", ".join(names))
+    return 0
