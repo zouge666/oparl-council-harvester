@@ -112,11 +112,16 @@ enabled = false
 """
 
 
-def test_harvest_dry_run_writes_jsonl(tmp_path, capsys, fake_oparl):
-    out_file = str(tmp_path / "output" / "testcity.jsonl")
+def harvest_args(tmp_path, more):
     config = write_config(tmp_path, HARVEST_CONFIG)
+    report_dir = str(tmp_path / "reports")
+    return ["--config", config, "harvest"] + more + ["--report-dir", report_dir]
 
-    exit_code = main(["--config", config, "harvest", "testcity", "--no-db", "--jsonl", out_file])
+
+def test_harvest_dry_run_writes_jsonl_and_report(tmp_path, capsys, fake_oparl):
+    out_file = str(tmp_path / "output" / "testcity.jsonl")
+
+    exit_code = main(harvest_args(tmp_path, ["testcity", "--no-db", "--jsonl", out_file]))
 
     assert exit_code == 0
     with open(out_file, encoding="utf-8") as f:
@@ -125,21 +130,23 @@ def test_harvest_dry_run_writes_jsonl(tmp_path, capsys, fake_oparl):
     first = json.loads(lines[0])
     assert first["source_name"] == "testcity"
     assert "raw_record" not in first
-    assert "harvest testcity: ok" in capsys.readouterr().out
+
+    out = capsys.readouterr().out
+    assert "harvest testcity: ok" in out
+    reports = list((tmp_path / "reports").glob("testcity_*.md"))
+    assert len(reports) == 1
 
 
 def test_harvest_failure_gives_exit_code_1(tmp_path, capsys, fake_oparl):
     fake_oparl.replace(responses.GET, PAGE_2_URL, status=503)
-    config = write_config(tmp_path, HARVEST_CONFIG)
 
-    exit_code = main(["--config", config, "harvest", "testcity", "--no-db"])
+    exit_code = main(harvest_args(tmp_path, ["testcity", "--no-db"]))
 
     assert exit_code == 1
     assert "harvest testcity: failed" in capsys.readouterr().out
 
 
 def test_disabled_source_is_not_harvested(tmp_path, capsys):
-    config = write_config(tmp_path, HARVEST_CONFIG)
-    exit_code = main(["--config", config, "harvest", "brokencity", "--no-db"])
+    exit_code = main(harvest_args(tmp_path, ["brokencity", "--no-db"]))
     assert exit_code == 2
     assert "disabled" in capsys.readouterr().err

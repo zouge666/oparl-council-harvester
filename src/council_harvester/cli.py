@@ -15,6 +15,7 @@ from council_harvester import db
 from council_harvester.config import ConfigError, get_source, load_settings
 from council_harvester.oparl_client import OParlClient, OParlError
 from council_harvester.pipeline import harvest_source
+from council_harvester.report import write_report
 
 
 def main(argv=None):
@@ -63,6 +64,7 @@ def build_parser():
     harvest.add_argument("--max-pages", type=int, help="stop after this many pages")
     harvest.add_argument("--no-db", action="store_true", help="dry run, dont save anything")
     harvest.add_argument("--jsonl", help="also write the records to this jsonl file")
+    harvest.add_argument("--report-dir", default="reports", help="where the report goes")
     return parser
 
 
@@ -154,6 +156,8 @@ def run_harvest(settings, args):
     if args.jsonl:
         write_jsonl(records, args.jsonl)
     print_summary(stats)
+    report_path = write_report(stats, records, args.report_dir)
+    print(f"  report: {report_path}")
 
     if stats["status"] == "failed":
         return 1

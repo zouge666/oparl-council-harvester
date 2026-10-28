@@ -42,6 +42,8 @@ uv run council-harvester harvest dresden --since 2026-09-01 --no-db --jsonl outp
 ```
 
 Running it again does not make duplicates, it updates changed papers and skips the rest.
+After each run a quality report (counts, broken papers, flags, locations to check)
+is written to `reports/`.
 
 ## Checks
 

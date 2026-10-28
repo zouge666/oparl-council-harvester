@@ -8,7 +8,7 @@ for one source it does this:
   5. normalize them and save them (inserted / updated / unchanged)
 """
 
-from datetime import datetime
+from datetime import datetime, timezone
 
 from council_harvester import db
 from council_harvester.keywords import is_excluded, match_signal
@@ -24,8 +24,15 @@ def harvest_source(client, settings, source, conn=None, since=None, max_pages=No
     max_pages stops early, handy for demos.
     """
     harvest = Harvest(client, settings, source, conn, since, max_pages)
+    harvest.stats["started_at"] = now_text()
     harvest.run()
+    harvest.stats["finished_at"] = now_text()
+    harvest.stats["requests"] = client.request_count
     return harvest.records, harvest.stats
+
+
+def now_text():
+    return datetime.now(timezone.utc).isoformat(timespec="seconds")
 
 
 def new_stats(source_name):
@@ -34,7 +41,10 @@ def new_stats(source_name):
         "status": "running",
         "error": None,
         "since": None,
+        "started_at": None,
+        "finished_at": None,
         "pages": 0,
+        "requests": 0,
         "papers_seen": 0,
         "malformed": 0,
         "deleted": 0,
