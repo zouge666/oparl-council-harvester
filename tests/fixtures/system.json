@@ -1,0 +1,10 @@
+{
+  "id": "https://oparl.example.test/system",
+  "type": "https://schema.oparl.org/1.1/System",
+  "oparlVersion": "https://schema.oparl.org/1.1/",
+  "name": "Teststadt",
+  "body": "https://oparl.example.test/bodies",
+  "vendor": "https://www.somacos.de?oparl=v1.5.4",
+  "product": "Test copy of a Somacos Session system",
+  "license": "https://www.govdata.de/dl-de/zero-2-0"
+}

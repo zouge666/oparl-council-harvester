@@ -4,6 +4,8 @@ run `council-harvester --help` to see all commands.
 """
 
 import argparse
+import json
+import os
 import sys
 
 import psycopg
@@ -12,6 +14,7 @@ from dotenv import load_dotenv
 from council_harvester import db
 from council_harvester.config import ConfigError, get_source, load_settings
 from council_harvester.oparl_client import OParlClient, OParlError
+from council_harvester.pipeline import harvest_source
 
 
 def main(argv=None):
@@ -27,6 +30,8 @@ def main(argv=None):
             return run_check(settings, args.source)
         if args.command == "init-db":
             return run_init_db(settings)
+        if args.command == "harvest":
+            return run_harvest(settings, args)
     except ConfigError as e:
         print(f"config problem: {e}", file=sys.stderr)
         return 2
@@ -50,6 +55,14 @@ def build_parser():
     check.add_argument("source", nargs="?", help="only check this source")
 
     commands.add_parser("init-db", help="create the schema and tables in postgis")
+
+    harvest = commands.add_parser("harvest", help="harvest the papers of one source")
+    harvest.add_argument("source", help="name of the source in the config, like dresden")
+    harvest.add_argument("--since", help="only papers changed since then (2026-01-31)")
+    harvest.add_argument("--full", action="store_true", help="ignore the saved state, read all")
+    harvest.add_argument("--max-pages", type=int, help="stop after this many pages")
+    harvest.add_argument("--no-db", action="store_true", help="dry run, dont save anything")
+    harvest.add_argument("--jsonl", help="also write the records to this jsonl file")
     return parser
 
 
@@ -110,3 +123,70 @@ def run_init_db(settings):
     conn.close()
     print("ran sql files: " + ", ".join(names))
     return 0
+
+
+def run_harvest(settings, args):
+    source = get_source(settings, args.source)
+    if not source["enabled"]:
+        print(f"source '{source['name']}' is disabled in the config", file=sys.stderr)
+        return 2
+
+    conn = None
+    if not args.no_db:
+        conn = db.connect(settings["database_url"])
+
+    # incremental run: only ask for papers that changed since the last full run
+    since = args.since
+    if since is None and conn is not None and not args.full:
+        since = db.get_watermark(conn, source["name"])
+        if since:
+            print(f"incremental run, papers changed since {since}")
+
+    client = OParlClient(settings["http"])
+    records, stats = harvest_source(client, settings, source, conn, since, args.max_pages)
+
+    # only move the watermark after a complete run, else we could miss papers next time
+    if conn is not None and stats["status"] == "ok":
+        db.save_watermark(conn, source["name"], stats["newest_modified"])
+    if conn is not None:
+        conn.close()
+
+    if args.jsonl:
+        write_jsonl(records, args.jsonl)
+    print_summary(stats)
+
+    if stats["status"] == "failed":
+        return 1
+    return 0
+
+
+def write_jsonl(records, path):
+    folder = os.path.dirname(path)
+    if folder:
+        os.makedirs(folder, exist_ok=True)
+
+    with open(path, "w", encoding="utf-8") as f:
+        for record in records:
+            row = dict(record)
+            # the raw json is big, it only goes into the database
+            del row["raw_record"]
+            f.write(json.dumps(row, ensure_ascii=False) + "\n")
+    print(f"wrote {len(records)} records to {path}")
+
+
+def print_summary(stats):
+    print(f"harvest {stats['source']}: {stats['status']}")
+    if stats["error"]:
+        print(f"  error: {stats['error']}")
+    print(f"  pages: {stats['pages']}, papers: {stats['papers_seen']}, matched: {stats['matched']}")
+    print(
+        f"  saved: {stats['inserted']} new, {stats['updated']} updated, "
+        f"{stats['unchanged']} unchanged"
+    )
+    print(
+        f"  skipped: {stats['malformed']} broken, {stats['duplicates']} double, "
+        f"{stats['deleted']} deleted, {stats['excluded']} excluded, {stats['too_old']} too old, "
+        f"{stats['not_relevant']} not relevant"
+    )
+    for warning in stats["warnings"]:
+        print(f"  warning: {warning}")

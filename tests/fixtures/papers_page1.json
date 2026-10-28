@@ -1,0 +1,76 @@
+{
+  "data": [
+    {
+      "id": "https://oparl.example.test/bodies/0001/papers/vo/1001",
+      "type": "https://schema.oparl.org/1.1/Paper",
+      "name": "Bebauungsplan Nr. 9001 - Neubau Umspannwerk Teststadt-Nord (110-kV)",
+      "reference": "V9001/26",
+      "date": "2026-05-04",
+      "paperType": "Vorlage Stadtrat",
+      "location": [
+        {
+          "id": "https://oparl.example.test/bodies/0001/locations/1",
+          "type": "https://schema.oparl.org/1.1/Location",
+          "description": "Gewerbegebiet Nord",
+          "geojson": {
+            "type": "Feature",
+            "geometry": {"type": "Point", "coordinates": [13.75, 51.12]}
+          }
+        }
+      ],
+      "created": "2026-05-01T09:00:00+02:00",
+      "modified": "2026-05-04T10:00:00+02:00"
+    },
+    {
+      "id": "https://oparl.example.test/bodies/0001/papers/vo/1002",
+      "type": "https://schema.oparl.org/1.1/Paper",
+      "name": "Ansiedlung einer Halbleiterfabrik im Industriegebiet Ost",
+      "reference": "V9002/26",
+      "date": "2026-04-20",
+      "paperType": "Vorlage Stadtrat",
+      "created": "2026-04-18T09:00:00+02:00",
+      "modified": "2026-04-20T11:30:00+02:00"
+    },
+    {
+      "id": "https://oparl.example.test/bodies/0001/papers/vo/1003",
+      "type": "https://schema.oparl.org/1.1/Paper",
+      "name": "Sanierung der 36. Grundschule",
+      "reference": "V9003/26",
+      "date": "2026-04-18",
+      "paperType": "Vorlage Stadtrat",
+      "created": "2026-04-17T09:00:00+02:00",
+      "modified": "2026-04-18T08:00:00+02:00"
+    },
+    {
+      "id": "https://oparl.example.test/bodies/0001/papers/vo/1004",
+      "type": "https://schema.oparl.org/1.1/Paper",
+      "date": "2026-04-17",
+      "modified": "2026-04-17T08:00:00+02:00"
+    },
+    "this is not a paper",
+    {
+      "id": "https://oparl.example.test/bodies/0001/papers/vo/1005",
+      "type": "https://schema.oparl.org/1.1/Paper",
+      "name": "Rechenzentrum am Flughafen - Aufstellungsbeschluss",
+      "reference": "V9005/26",
+      "date": "2026-04-02",
+      "paperType": "Vorlage Stadtrat",
+      "location": [
+        {
+          "type": "https://schema.oparl.org/1.1/Location",
+          "streetAddress": "Flughafenstraße 1",
+          "postalCode": "01109",
+          "locality": "Dresden"
+        }
+      ],
+      "created": "2026-04-01T09:00:00+02:00",
+      "modified": "2026-04-02T09:00:00+02:00"
+    }
+  ],
+  "pagination": {"elementsPerPage": 10, "currentPage": 1},
+  "links": {
+    "first": "https://oparl.example.test/bodies/0001/papers?limit=10",
+    "self": "https://oparl.example.test/bodies/0001/papers?limit=10",
+    "next": "https://oparl.example.test/bodies/0001/papers?page=2&limit=10"
+  }
+}

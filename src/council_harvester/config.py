@@ -6,6 +6,7 @@ secrets (like the database password) only come from env vars.
 
 import os
 import tomllib
+from datetime import date
 
 DEFAULT_CONFIG_PATH = "config/harvester.toml"
 
@@ -51,6 +52,7 @@ def load_settings(path=None):
         settings["filter"] = {}
     if "exclude_keywords" not in settings["filter"]:
         settings["filter"]["exclude_keywords"] = []
+    check_date(settings["filter"].get("min_paper_date"))
 
     # the db url has the password in it, so it only comes from the env (or .env file)
     settings["database_url"] = os.environ.get("DATABASE_URL", "")
@@ -86,6 +88,15 @@ def check_signals(signals):
             # very short keywords match way to much ("kv" is in "musikverein")
             if not isinstance(keyword, str) or len(keyword.strip()) < 4:
                 raise ConfigError(f"keyword '{keyword}' in '{name}' is too short")
+
+
+def check_date(value):
+    if value is None:
+        return
+    try:
+        date.fromisoformat(value)
+    except (TypeError, ValueError):
+        raise ConfigError(f"min_paper_date must look like 2022-01-31, not '{value}'")
 
 
 def get_source(settings, name):

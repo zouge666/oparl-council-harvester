@@ -1,0 +1,12 @@
+{
+  "data": [
+    {
+      "id": "https://oparl.example.test/bodies/0001",
+      "type": "https://schema.oparl.org/1.1/Body",
+      "name": "Instance 0001",
+      "paper": "https://oparl.example.test/bodies/0001/papers"
+    }
+  ],
+  "pagination": {"elementsPerPage": 10, "currentPage": 1},
+  "links": {"self": "https://oparl.example.test/bodies"}
+}

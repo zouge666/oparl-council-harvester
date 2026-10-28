@@ -45,6 +45,8 @@ semiconductor_dc_park = [
 ]
 
 [filter]
+# matched papers older than this are skipped, they are most likely about things already built
+min_paper_date = "2022-01-01"
 # papers with one of these words are skipped even when a keyword matches.
 # small grants for clubs talk about tsmc sometimes, but they are not infrastructure
 exclude_keywords = [

@@ -28,6 +28,21 @@ uv run council-harvester check
 What we found about the sources is in [docs/data_source.md](docs/data_source.md).
 How a paper becomes a row is in [docs/mapping.md](docs/mapping.md).
 
+## Harvest
+
+```bash
+# first run, only papers changed since 2024 (dresden is slow, ~30 sec per page)
+uv run council-harvester harvest dresden --since 2024-01-01
+
+# next runs are incremental, it remembers how far it got
+uv run council-harvester harvest dresden
+
+# try it without a database, just write a file
+uv run council-harvester harvest dresden --since 2026-09-01 --no-db --jsonl output/dresden.jsonl
+```
+
+Running it again does not make duplicates, it updates changed papers and skips the rest.
+
 ## Checks
 
 ```bash

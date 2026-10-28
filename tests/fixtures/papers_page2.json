@@ -1,0 +1,70 @@
+{
+  "data": [
+    {
+      "id": "https://oparl.example.test/bodies/0001/papers/vo/1001",
+      "type": "https://schema.oparl.org/1.1/Paper",
+      "name": "Bebauungsplan Nr. 9001 - Neubau Umspannwerk Teststadt-Nord (110-kV)",
+      "reference": "V9001/26",
+      "date": "2026-05-04",
+      "paperType": "Vorlage Stadtrat",
+      "created": "2026-05-01T09:00:00+02:00",
+      "modified": "2026-05-04T10:00:00+02:00"
+    },
+    {
+      "id": "https://oparl.example.test/bodies/0001/papers/vo/1006",
+      "type": "https://schema.oparl.org/1.1/Paper",
+      "deleted": true
+    },
+    {
+      "id": "https://oparl.example.test/bodies/0001/papers/vo/1007",
+      "type": "https://schema.oparl.org/1.1/Paper",
+      "name": "Umspannwerk Süd - Inbetriebnahme",
+      "reference": "V1007/19",
+      "date": "2019-03-01",
+      "paperType": "Information",
+      "created": "2019-02-20T09:00:00+01:00",
+      "modified": "2019-03-01T09:00:00+01:00"
+    },
+    {
+      "id": "https://oparl.example.test/bodies/0001/papers/vo/1008",
+      "type": "https://schema.oparl.org/1.1/Paper",
+      "name": "Kleinprojektförderung für den Verein Beispiel e. V., Projekt \"TSMC in Dresden\"",
+      "reference": "V-Kl9008/26",
+      "date": "2026-03-01",
+      "paperType": "Vorlage Stadtbezirksbeirat",
+      "created": "2026-02-27T09:00:00+01:00",
+      "modified": "2026-03-01T09:00:00+01:00"
+    },
+    {
+      "id": "https://oparl.example.test/bodies/0001/papers/vo/1009",
+      "type": "https://schema.oparl.org/1.1/Paper",
+      "name": "Erweiterung Rechenzentrum West",
+      "reference": "V9009/26",
+      "date": "2026-02-10",
+      "paperType": "Vorlage Stadtrat",
+      "location": [
+        {
+          "description": "Rechenzentrum West",
+          "geojson": {"type": "Point", "coordinates": [51.05, 13.74]}
+        }
+      ],
+      "created": "2026-02-09T09:00:00+01:00",
+      "modified": "2026-02-10T09:00:00+01:00"
+    },
+    {
+      "id": "https://oparl.example.test/bodies/0001/papers/vo/1010",
+      "type": "https://schema.oparl.org/1.1/Paper",
+      "name": "Neues Umspannwerk für den Halbleiterpark",
+      "reference": "V9010/26",
+      "date": "10.02.2026",
+      "paperType": "Antrag",
+      "created": "2026-02-08T09:00:00+01:00",
+      "modified": "2026-02-10T12:00:00+01:00"
+    }
+  ],
+  "pagination": {"elementsPerPage": 10, "currentPage": 2},
+  "links": {
+    "first": "https://oparl.example.test/bodies/0001/papers?limit=10",
+    "self": "https://oparl.example.test/bodies/0001/papers?page=2&limit=10"
+  }
+}

@@ -93,6 +93,15 @@ def test_exclude_list_defaults_to_empty(tmp_path):
     assert settings["filter"]["exclude_keywords"] == []
 
 
+def test_bad_min_paper_date_is_rejected(tmp_path):
+    text = GOOD_CONFIG + """
+[filter]
+min_paper_date = "01.01.2022"
+"""
+    with pytest.raises(ConfigError, match="min_paper_date"):
+        load_settings(write_config(tmp_path, text))
+
+
 def test_unknown_source_name(tmp_path):
     settings = load_settings(write_config(tmp_path, GOOD_CONFIG))
     with pytest.raises(ConfigError):

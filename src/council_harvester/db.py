@@ -82,3 +82,35 @@ def save_record(conn, record):
     if row[0]:
         return "inserted"
     return "updated"
+
+
+def get_watermark(conn, source_name):
+    """the newest "modified" time from the last full run, minus one hour.
+
+    the hour is just to be safe with clocks. papers we get twice are no problem,
+    they come back as "unchanged". gives back None if we never had a full run.
+    """
+    row = conn.execute(
+        "SELECT last_modified_seen - interval '1 hour' FROM iris_staging.harvest_state "
+        "WHERE source_name = %s",
+        [source_name],
+    ).fetchone()
+    if row is None:
+        return None
+    return row[0].isoformat()
+
+
+def save_watermark(conn, source_name, newest_modified):
+    if newest_modified is None:
+        return
+    conn.execute(
+        """
+        INSERT INTO iris_staging.harvest_state (source_name, last_modified_seen)
+        VALUES (%s, %s)
+        ON CONFLICT (source_name) DO UPDATE SET
+            last_modified_seen = GREATEST(harvest_state.last_modified_seen,
+                                          EXCLUDED.last_modified_seen),
+            last_success_at = now()
+        """,
+        [source_name, newest_modified],
+    )
