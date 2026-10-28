@@ -42,6 +42,28 @@ We checked the sources on 2026-10-27 with `council-harvester check` and by hand 
   2. read the ALLRIS html pages. this is a different pattern, it breaks easy and we would
      have to check the terms of use first
 
+## What we saw in the real Dresden data
+
+First we read the newest 6000 papers (dates 2022-07-25 to 2026-10-22) to tune the keywords.
+Then we did a real run with all papers changed since 2024 (5213 papers, see `samples/`).
+
+- every paper had a `date`, none had a `web` link or a `location`
+- deleted papers do show up (as `"deleted": true` with no title)
+- the real run found 12 papers:
+  - 10 `semiconductor_dc_park`: the TSMC / ESMC settlement, trucks to the ESMC building site,
+    what TSMC means for flats in Pieschen, the "Halbleiterstandort" cooperation and a tram
+    line for Silicon Saxony
+  - 2 `mega_substation`: two new 110-kV power lines that SachsenEnergie plans through Rähnitz.
+    the Klotzsche district council (same district as the TSMC / ESMC site) wants other routes
+- 3 of the 12 are false positives: the city's own IT data center ("Rechenzentrum")
+- 61 papers were small grants for clubs ("Kleinprojektförderung") and got skipped
+- the word "Umspannwerk" is not in a single title. Big substations are mostly planned by the
+  grid companies and approved by the state, so council papers are a weak source for them.
+  Better sources would be the state approvals (Landesdirektion Sachsen) and the grid plans
+  of the network operators.
+- the newest 6000 papers only had `vo` ids, the `ag` ids only showed up in the real run.
+  thats why we check the links on real data and not just on the first pages.
+
 ## Other places in Saxony
 
 - The OParl endpoint list (https://github.com/OParl/resources/blob/master/endpoints.yml)

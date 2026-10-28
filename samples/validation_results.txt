@@ -1,0 +1,71 @@
+1. rows per source and signal type
+ source_name |      signal_type      | rows 
+-------------+-----------------------+------
+ dresden     | mega_substation       |    2
+ dresden     | semiconductor_dc_park |   10
+(2 rows)
+
+2. duplicates (expect 0 rows)
+ source_system | source_record_id | count 
+---------------+------------------+-------
+(0 rows)
+
+3. geo status counts
+ geo_status  | rows | with_point 
+-------------+------+------------
+ no_location |   12 |          0
+(1 row)
+
+4. resolved rows without a good EPSG:25832 point (expect 0 rows)
+ id | source_record_id 
+----+------------------
+(0 rows)
+
+5. points outside of saxony (expect 0 rows)
+ id | source_record_id | lon_lat 
+----+------------------+---------
+(0 rows)
+
+6. rows that can not be traced back to the source (expect 0 rows)
+ id | source_record_id 
+----+------------------
+(0 rows)
+
+7. rows without a publication date
+ id | reference | title 
+----+-----------+-------
+(0 rows)
+
+8. rows with a date in the future
+ id | reference | published_date 
+----+-----------+----------------
+(0 rows)
+
+9. rows with quality flags
+ reference | geo_status | quality_flags 
+-----------+------------+---------------
+(0 rows)
+
+10. newest rows
+ published_date |    reference    |      signal_type      |                                      title                                       |                      source_url                      
+----------------+-----------------+-----------------------+----------------------------------------------------------------------------------+------------------------------------------------------
+ 2026-07-28     | P0141/26        | semiconductor_dc_park | Vollständige Verlängerung der Linie 8 bis Boxdorf - Zukunftssicherung für Silico | https://ratsinfo.dresden.de/vo0050.asp?__kvonr=30797
+ 2026-03-17     | V0750/26        | semiconductor_dc_park | Intensivierung der interkommunalen Kooperation zur Entwicklung des europäischen  | https://ratsinfo.dresden.de/vo0050.asp?__kvonr=30035
+ 2025-12-02     | VorR-Kl00006/25 | mega_substation       | Infrastrukturausbau in Rähnitz – Verlegung von zwei 110-kV-Leitungen durch Rähni | https://ratsinfo.dresden.de/ag0050.asp?__kagnr=12193
+ 2025-08-07     | V0470/25        | semiconductor_dc_park | Vergabenummer: 2025-GB313-00001 Neu- und Umbau Rechenzentrum RZ E1-Ost SKDF am S | https://ratsinfo.dresden.de/vo0050.asp?__kvonr=29164
+ 2025-06-04     | AF-Pi00003/25   | semiconductor_dc_park | Auswirkungen der TSMC-Ansiedlung in Dresden-Klotzsche auf den Wohnungsmarkt im S | https://ratsinfo.dresden.de/ag0050.asp?__kagnr=11638
+ 2025-05-06     | VorR-Kl00004/25 | semiconductor_dc_park | Schwerlastverkehr zur Lagerfläche der Baustelle ESMC an der Radeburger Straße üb | https://ratsinfo.dresden.de/ag0050.asp?__kagnr=11556
+ 2025-04-01     | VorR-Kl00002/25 | mega_substation       | 110kV – Leitung                                                                  | https://ratsinfo.dresden.de/ag0050.asp?__kagnr=11483
+ 2024-10-23     | V0060/24        | semiconductor_dc_park | Intensivierung der interkommunalen Kooperation zur Entwicklung des europäischen  | https://ratsinfo.dresden.de/vo0050.asp?__kvonr=27658
+ 2024-03-01     | A0584/24        | semiconductor_dc_park | Aktuelle Stunde zum Thema „TSMC-Ansiedlung bereits jetzt zum Erfolg machen: Kurz | https://ratsinfo.dresden.de/vo0050.asp?__kvonr=26624
+ 2023-12-19     | V2661/23        | semiconductor_dc_park | Vergabenummer: 2023-171-00026, Kopplung zweier Rechenzentren mit redundanter Weg | https://ratsinfo.dresden.de/vo0050.asp?__kvonr=26223
+ 2023-11-21     | V2565/23        | semiconductor_dc_park | Anmietung von bewirtschaften Serverschränken („Racks“) und Aufnahme des Rechenze | https://ratsinfo.dresden.de/vo0050.asp?__kvonr=25964
+ 2023-10-23     | A0537/23        | semiconductor_dc_park | TSMC-Ansiedelung in Klotzsche: Verdrängung des Mittelstands vermeiden            | https://ratsinfo.dresden.de/vo0050.asp?__kvonr=25957
+(12 rows)
+
+11. last full run per source (incremental watermark)
+ source_name |   last_modified_seen   |        last_success_at        
+-------------+------------------------+-------------------------------
+ dresden     | 2026-10-27 14:19:40+00 | 2026-10-27 20:21:01.670591+00
+(1 row)
+
